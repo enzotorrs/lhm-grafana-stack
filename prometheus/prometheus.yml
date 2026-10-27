@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 5s
+  scrape_timeout: 5s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Exporter que converte o /data.json do LibreHardwareMonitor.
+  # As máquinas Windows são definidas na variável LHM_TARGETS do docker-compose.
+  - job_name: lhm
+    static_configs:
+      - targets: ["lhm-exporter:9188"]
+
+  - job_name: prometheus
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["localhost:9090"]

@@ -1,0 +1,5408 @@
+{
+  "uid": "lhm-sensors",
+  "title": "LHM · Todos os sensores",
+  "description": "Todos os sensores do LibreHardwareMonitor agrupados por tipo. Abra uma linha para ver o histórico e os valores atuais.",
+  "tags": [
+    "lhm",
+    "hardware",
+    "windows"
+  ],
+  "editable": true,
+  "graphTooltip": 1,
+  "timezone": "browser",
+  "refresh": "10s",
+  "schemaVersion": 41,
+  "version": 1,
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m"
+    ]
+  },
+  "fiscalYearStartMonth": 0,
+  "liveNow": false,
+  "weekStart": "",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "host",
+        "label": "Máquina",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "lhm-prometheus"
+        },
+        "query": "label_values(lhm_info, host)",
+        "definition": "label_values(lhm_info, host)",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "multi": false,
+        "includeAll": false,
+        "hide": 0,
+        "current": {},
+        "options": []
+      },
+      {
+        "name": "hardware",
+        "label": "Hardware",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "lhm-prometheus"
+        },
+        "query": "label_values(lhm_hardware_info{host=~\"$host\"}, hardware)",
+        "definition": "label_values(lhm_hardware_info{host=~\"$host\"}, hardware)",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "hide": 0,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "allValue": ".*"
+      },
+      {
+        "name": "sensor",
+        "label": "Sensor (regex)",
+        "type": "textbox",
+        "query": ".*",
+        "hide": 0,
+        "current": {
+          "text": ".*",
+          "value": ".*"
+        },
+        "options": [
+          {
+            "selected": true,
+            "text": ".*",
+            "value": ".*"
+          }
+        ],
+        "description": "Filtro por nome do sensor, ex.: (?i).*core.*"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Máquinas online",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lhm-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "expr": "sum(lhm_up)",
+          "refId": "A",
+          "legendFormat": "__auto",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "wideLayout": true,
+        "showPercentChange": false
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Sensores exportados",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lhm-prometheus"
+      },
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "expr": "sum(lhm_sensors * on (target) group_left (host) max by (target, host) (lhm_info{host=~\"$host\"}))",
+          "refId": "A",
+          "legendFormat": "__auto",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "mappings": [],
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "wideLayout": true,
+        "showPercentChange": false
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Tempo de coleta",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lhm-prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "expr": "max(lhm_scrape_duration_seconds * on (target) group_left (host) max by (target, host) (lhm_info{host=~\"$host\"}))",
+          "refId": "A",
+          "legendFormat": "__auto",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "mappings": [],
+          "decimals": 3,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "wideLayout": true,
+        "showPercentChange": false
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Versão do LHM",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lhm-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "expr": "max by (version) (lhm_info{host=~\"$host\"})",
+          "refId": "A",
+          "legendFormat": "{{version}}",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "name",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "wideLayout": true,
+        "showPercentChange": false
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Hardware detectado",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lhm-prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "expr": "count by (hardware_type) (lhm_hardware_info{host=~\"$host\"})",
+          "refId": "A",
+          "legendFormat": "{{hardware_type}}",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "mappings": [],
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "wideLayout": true,
+        "showPercentChange": false
+      }
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "Hardware",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lhm-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "expr": "max by (hardware, hardware_type, hardware_id) (lhm_hardware_info{host=~\"$host\",hardware=~\"$hardware\"})",
+          "refId": "A",
+          "legendFormat": "__auto",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        },
+        "sortBy": [
+          {
+            "displayName": "Tipo",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true
+            },
+            "indexByName": {
+              "hardware": 0,
+              "hardware_type": 1,
+              "hardware_id": 2
+            },
+            "renameByName": {
+              "hardware": "Hardware",
+              "hardware_type": "Tipo",
+              "hardware_id": "ID no LHM"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "row",
+      "title": "Temperaturas",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 11,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 8,
+          "type": "timeseries",
+          "title": "Temperaturas",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 12,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_temperature_celsius{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "celsius",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 9,
+          "type": "table",
+          "title": "Temperaturas — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 12,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_temperature_celsius{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "celsius"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Carga",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 11,
+          "type": "timeseries",
+          "title": "Carga",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 13,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_load_percent{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 12,
+          "type": "table",
+          "title": "Carga — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 13,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_load_percent{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "row",
+      "title": "Clocks",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 14,
+          "type": "timeseries",
+          "title": "Clocks",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 14,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_clock_hertz{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "hertz",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 15,
+          "type": "table",
+          "title": "Clocks — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 14,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_clock_hertz{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "hertz"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 2
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "row",
+      "title": "Potência",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 17,
+          "type": "timeseries",
+          "title": "Potência",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 15,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_power_watts{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 18,
+          "type": "table",
+          "title": "Potência — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 15,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_power_watts{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "watt"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "row",
+      "title": "Tensões",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 15,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 20,
+          "type": "timeseries",
+          "title": "Tensões",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 16,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_voltage_volts{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "volt",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 3,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 21,
+          "type": "table",
+          "title": "Tensões — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 16,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_voltage_volts{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "volt"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 3
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "row",
+      "title": "Correntes",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 23,
+          "type": "timeseries",
+          "title": "Correntes",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 17,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_current_amperes{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "amp",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 3,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 24,
+          "type": "table",
+          "title": "Correntes — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 17,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_current_amperes{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "amp"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 3
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "row",
+      "title": "Ventoinhas (RPM)",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 17,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 26,
+          "type": "timeseries",
+          "title": "Ventoinhas (RPM)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 18,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_fan_rpm{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "rotrpm",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 27,
+          "type": "table",
+          "title": "Ventoinhas (RPM) — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 18,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_fan_rpm{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "rotrpm"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "type": "row",
+      "title": "Controle de ventoinhas / bombas",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 29,
+          "type": "timeseries",
+          "title": "Controle de ventoinhas / bombas",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 19,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_control_percent{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 30,
+          "type": "table",
+          "title": "Controle de ventoinhas / bombas — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 19,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_control_percent{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "type": "row",
+      "title": "Níveis (vida útil, bateria…)",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 32,
+          "type": "timeseries",
+          "title": "Níveis (vida útil, bateria…)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 20,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_level_percent{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 33,
+          "type": "table",
+          "title": "Níveis (vida útil, bateria…) — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 20,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_level_percent{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "type": "row",
+      "title": "Dados",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 35,
+          "type": "timeseries",
+          "title": "Dados",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 21,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_data_bytes{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 36,
+          "type": "table",
+          "title": "Dados — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 21,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_data_bytes{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "bytes"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "type": "row",
+      "title": "Taxa de transferência",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 38,
+          "type": "timeseries",
+          "title": "Taxa de transferência",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 22,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_throughput_bytes_per_second{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "binBps",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 39,
+          "type": "table",
+          "title": "Taxa de transferência — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 22,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_throughput_bytes_per_second{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "binBps"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "type": "row",
+      "title": "Energia",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 41,
+          "type": "timeseries",
+          "title": "Energia",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 23,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_energy_watthours{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watth",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 42,
+          "type": "table",
+          "title": "Energia — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 23,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_energy_watthours{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "watth"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 2
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "type": "row",
+      "title": "Frequência",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 44,
+          "type": "timeseries",
+          "title": "Frequência",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 24,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_frequency_hertz{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "hertz",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 45,
+          "type": "table",
+          "title": "Frequência — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 24,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_frequency_hertz{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "hertz"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "type": "row",
+      "title": "Vazão",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 47,
+          "type": "timeseries",
+          "title": "Vazão",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 25,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_flow_liters_per_hour{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "suffix: L/h",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 48,
+          "type": "table",
+          "title": "Vazão — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 25,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_flow_liters_per_hour{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "suffix: L/h"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "type": "row",
+      "title": "Umidade",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 50,
+          "type": "timeseries",
+          "title": "Umidade",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 26,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_humidity_percent{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 51,
+          "type": "table",
+          "title": "Umidade — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 26,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_humidity_percent{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "type": "row",
+      "title": "Ruído",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 26,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 53,
+          "type": "timeseries",
+          "title": "Ruído",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 27,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_noise_decibels{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "dB",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 54,
+          "type": "table",
+          "title": "Ruído — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 27,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_noise_decibels{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dB"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "type": "row",
+      "title": "Condutividade",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 27,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 56,
+          "type": "timeseries",
+          "title": "Condutividade",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 28,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_conductivity_microsiemens_per_centimeter{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "suffix: µS/cm",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 57,
+          "type": "table",
+          "title": "Condutividade — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 28,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_conductivity_microsiemens_per_centimeter{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "suffix: µS/cm"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "type": "row",
+      "title": "Fatores e contadores",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 59,
+          "type": "timeseries",
+          "title": "Fatores e contadores",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 29,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_factor{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 60,
+          "type": "table",
+          "title": "Fatores e contadores — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 29,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_factor{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "none"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 2
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "type": "row",
+      "title": "Temporizações",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 29,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 62,
+          "type": "timeseries",
+          "title": "Temporizações",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 30,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_timing_seconds{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 3,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 63,
+          "type": "table",
+          "title": "Temporizações — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 30,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_timing_seconds{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 3
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "type": "row",
+      "title": "Intervalos de tempo",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 30,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 65,
+          "type": "timeseries",
+          "title": "Intervalos de tempo",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 31,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_timespan_seconds{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "dtdurations",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 66,
+          "type": "table",
+          "title": "Intervalos de tempo — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 31,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_timespan_seconds{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dtdurations"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "type": "row",
+      "title": "Outros sensores",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 31,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 68,
+          "type": "timeseries",
+          "title": "Outros sensores",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 32,
+            "w": 15,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_sensor_value{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "{{hardware}} · {{sensor}}",
+              "range": true,
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "opacity",
+                "showPoints": "never",
+                "spanNulls": 30000,
+                "axisSoftMin": 0,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "insertNulls": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "axisPlacement": "auto",
+                "axisLabel": ""
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "showLegend": false,
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": []
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "hideZeros": false
+            }
+          }
+        },
+        {
+          "id": 69,
+          "type": "table",
+          "title": "Outros sensores — valores atuais",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "lhm-prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 32,
+            "w": 9,
+            "h": 10
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "lhm-prometheus"
+              },
+              "expr": "lhm_sensor_value{host=~\"$host\",hardware=~\"$hardware\",sensor=~\"$sensor\"}",
+              "refId": "A",
+              "legendFormat": "__auto",
+              "range": false,
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false,
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Valor"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "none"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 2
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "right"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "countRows": false,
+              "fields": ""
+            },
+            "sortBy": [
+              {
+                "displayName": "Hardware",
+                "desc": false
+              }
+            ]
+          },
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "host": true,
+                  "hardware_type": true,
+                  "hardware_id": true,
+                  "instance": true,
+                  "job": true,
+                  "type": false
+                },
+                "indexByName": {
+                  "hardware": 0,
+                  "sensor": 1,
+                  "Value": 2,
+                  "sensor_id": 3
+                },
+                "renameByName": {
+                  "hardware": "Hardware",
+                  "sensor": "Sensor",
+                  "Value": "Valor",
+                  "sensor_id": "ID",
+                  "type": "Tipo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "title": "Visão geral",
+      "type": "link",
+      "url": "/d/lhm-overview/lhm-visao-geral?${host:queryparam}",
+      "icon": "dashboard",
+      "targetBlank": false,
+      "asDropdown": false,
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "tooltip": ""
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+# LibreHardwareMonitor -> Prometheus -> Grafana
+#
+# Dokploy: crie um serviço "Docker Compose" apontando para este repositório.
+# Configure as variáveis na aba "Environment" e o domínio na aba "Domains"
+# (serviço: grafana, porta: 3000). Nenhuma porta é publicada no host.
+
+services:
+  lhm-exporter:
+    build: ./exporter
+    restart: unless-stopped
+    environment:
+      LHM_TARGETS: ${LHM_TARGETS:?Defina LHM_TARGETS com o IP:porta do LibreHardwareMonitor, ex. 192.168.0.10:8085}
+      LHM_USERNAME: ${LHM_USERNAME:-}
+      LHM_PASSWORD: ${LHM_PASSWORD:-}
+      LHM_TIMEOUT: ${LHM_TIMEOUT:-4}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    expose:
+      - "9188"
+
+  prometheus:
+    build: ./prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-30d}
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+    volumes:
+      - prometheus-data:/prometheus
+    expose:
+      - "9090"
+    depends_on:
+      - lhm-exporter
+
+  grafana:
+    build: ./grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Defina GRAFANA_ADMIN_PASSWORD}
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-%(protocol)s://%(domain)s:%(http_port)s/}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
+      GF_NEWS_NEWS_FEED_ENABLED: "false"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/dashboards/lhm/lhm-overview.json
+      # Acesso só-leitura sem login (útil para deixar numa TV/tablet). Padrão: desligado.
+      GF_AUTH_ANONYMOUS_ENABLED: ${GRAFANA_ANONYMOUS_ACCESS:-false}
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes:
+      - grafana-data:/var/lib/grafana
+    expose:
+      - "3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus-data:
+  grafana-data:
