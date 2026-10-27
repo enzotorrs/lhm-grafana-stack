@@ -2023,7 +2023,7 @@
             "type": "prometheus",
             "uid": "lhm-prometheus"
           },
-          "expr": "max by (sensor) (lhm_load_percent{host=~\"$host\",hardware_type=\"gpu\",hardware=~\"$gpu\",sensor=~\"GPU Core|GPU Memory Controller|GPU Video Engine|GPU Bus|D3D 3D|D3D Video Decode|D3D Video Encode|D3D Copy|D3D Compute.*\"})",
+          "expr": "max by (sensor) (lhm_load_percent{host=~\"$host\",hardware_type=\"gpu\",hardware=~\"$gpu\",sensor=~\"GPU Core|GPU Memory Controller|GPU Video Engine|GPU Video Encode|GPU Video Decode|GPU Bus|D3D 3D|D3D Video Decode|D3D Video Encode|D3D Copy|D3D Compute.*\"})",
           "refId": "A",
           "legendFormat": "{{sensor}}",
           "range": true,
