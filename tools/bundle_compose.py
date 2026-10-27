@@ -88,6 +88,9 @@ services = f"""services:
     configs:
 {mounts("grafana_datasource", "grafana_dashboards_provider", "dashboard_overview", "dashboard_sensors")}    volumes:
       - grafana-data:/var/lib/grafana
+    # Acesso direto pela rede: http://IP-DO-SERVIDOR:3030 (a 3000 do host é do painel do Dokploy).
+    ports:
+      - "${{GRAFANA_PORT:-3030}}:3000"
     expose:
       - "3000"
     depends_on:
@@ -105,7 +108,8 @@ intro = (
     "#\n"
     "# Gerado por tools/bundle_compose.py a partir dos arquivos do repositório; não edite à mão.\n"
     "# Dokploy: crie um serviço \"Docker Compose\" com provider \"Raw\" e cole este arquivo.\n"
-    "# Variáveis na aba \"Environment\"; domínio na aba \"Domains\" (serviço grafana, porta 3000).\n"
+    "# Variáveis na aba \"Environment\". Grafana em http://IP-DO-SERVIDOR:3030 (GRAFANA_PORT)\n"
+    "# ou por domínio na aba \"Domains\" (serviço grafana, porta 3000) seguido de Deploy.\n"
     "# Requer Docker Compose 2.23.1 ou mais novo (configs com content).\n\n"
 )
 OUT.write_text(intro + services + "".join(block(n) for n in FILES), encoding="utf-8")

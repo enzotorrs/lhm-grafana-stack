@@ -1,8 +1,9 @@
 # LibreHardwareMonitor -> Prometheus -> Grafana
 #
 # Dokploy: crie um serviço "Docker Compose" apontando para este repositório.
-# Configure as variáveis na aba "Environment" e o domínio na aba "Domains"
-# (serviço: grafana, porta: 3000). Nenhuma porta é publicada no host.
+# Configure as variáveis na aba "Environment". Acesso ao Grafana:
+#   - direto pela rede: http://IP-DO-SERVIDOR:${GRAFANA_PORT} (padrão 3030)
+#   - por domínio: aba "Domains" (serviço grafana, porta 3000) e depois Deploy
 
 services:
   lhm-exporter:
@@ -50,6 +51,9 @@ services:
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
     volumes:
       - grafana-data:/var/lib/grafana
+    # Acesso direto pela rede: http://IP-DO-SERVIDOR:3030 (a 3000 do host é do painel do Dokploy).
+    ports:
+      - "${GRAFANA_PORT:-3030}:3000"
     expose:
       - "3000"
     depends_on:

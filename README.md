@@ -38,8 +38,8 @@ Escolha uma das duas formas:
 Nos dois casos:
 
 3. Na aba **Environment**, cole as variáveis de `.env.example` e ajuste os valores. As únicas obrigatórias são `LHM_TARGETS` e `GRAFANA_ADMIN_PASSWORD`.
-4. Na aba **Domains**, adicione o domínio apontando para o serviço **grafana**, porta **3000**.
-5. Clique em **Deploy**. O Grafana abre direto no dashboard "LHM · Visão geral".
+4. Clique em **Deploy** e abra `http://IP-DO-SERVIDOR-DOKPLOY:3030`. O Grafana abre direto no dashboard "LHM · Visão geral".
+5. (Opcional) Para acessar por domínio, adicione na aba **Domains** um domínio apontando para o serviço **grafana**, porta **3000**, e clique em **Deploy** de novo. Em Docker Compose o domínio só passa a valer depois de um novo deploy.
 
 ### Variáveis
 
@@ -49,7 +49,8 @@ Nos dois casos:
 | `LHM_USERNAME` / `LHM_PASSWORD` | vazio | Se você ativou autenticação no Remote Web Server |
 | `GRAFANA_ADMIN_USER` | `admin` | Usuário do Grafana |
 | `GRAFANA_ADMIN_PASSWORD` | — (obrigatória) | Senha do Grafana (vale só no primeiro deploy; depois troque pela UI) |
-| `GRAFANA_ROOT_URL` | automático | URL pública, ex.: `https://grafana.seudominio.com/` |
+| `GRAFANA_PORT` | `3030` | Porta do host para abrir o Grafana pela rede (a 3000 é do painel do Dokploy) |
+| `GRAFANA_ROOT_URL` | automático | URL pela qual você acessa, ex.: `http://192.168.0.20:3030/` ou `https://grafana.seudominio.com/` |
 | `GRAFANA_ANONYMOUS_ACCESS` | `false` | `true` libera visualização sem login (bom para TV/tablet) |
 | `PROMETHEUS_RETENTION` | `30d` | Tempo de histórico guardado |
 
@@ -71,4 +72,6 @@ Todas as métricas têm os labels `host`, `hardware`, `hardware_type` (`cpu`, `g
 - **"LHM: Offline" no dashboard**: veja os logs do serviço `lhm-exporter` no Dokploy. "sem conexão" significa firewall, IP errado ou Listen IP em `127.0.0.1`. "HTTP 401" significa usuário ou senha do LHM.
 - **Sem temperatura da CPU**: o LHM não está rodando como administrador.
 - **Muitas interfaces de rede**: use o filtro "Interface de rede" no topo do dashboard para esconder adaptadores virtuais (Hyper-V, VPN, Bluetooth).
-- **Rodar localmente**: `cp .env.example .env`, ajuste e rode `docker compose up -d --build`. Para acessar o Grafana sem domínio, adicione `ports: ["3000:3000"]` ao serviço `grafana`.
+- **404 ao abrir pelo domínio**: o 404 vem do Traefik do Dokploy e significa que nenhuma rota casou com o endereço digitado. Confira três coisas: se você fez **Deploy** depois de adicionar o domínio; se o domínio aponta para o serviço `grafana` na porta `3000`; e se você está abrindo exatamente aquele domínio, não o IP do servidor. Para acesso só na rede local, use `http://IP-DO-SERVIDOR:3030`, que não passa pelo Traefik.
+- **"port is already allocated" no deploy**: outra coisa já usa a porta. Troque `GRAFANA_PORT` (ex.: `3031`).
+- **Rodar localmente**: `cp .env.example .env`, ajuste e rode `docker compose up -d --build`. Depois abra `http://localhost:3030`.

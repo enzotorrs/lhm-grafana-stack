@@ -2,7 +2,8 @@
 #
 # Gerado por tools/bundle_compose.py a partir dos arquivos do repositório; não edite à mão.
 # Dokploy: crie um serviço "Docker Compose" com provider "Raw" e cole este arquivo.
-# Variáveis na aba "Environment"; domínio na aba "Domains" (serviço grafana, porta 3000).
+# Variáveis na aba "Environment". Grafana em http://IP-DO-SERVIDOR:3030 (GRAFANA_PORT)
+# ou por domínio na aba "Domains" (serviço grafana, porta 3000) seguido de Deploy.
 # Requer Docker Compose 2.23.1 ou mais novo (configs com content).
 
 services:
@@ -67,6 +68,9 @@ services:
         target: /etc/grafana/dashboards/lhm/lhm-sensors.json
     volumes:
       - grafana-data:/var/lib/grafana
+    # Acesso direto pela rede: http://IP-DO-SERVIDOR:3030 (a 3000 do host é do painel do Dokploy).
+    ports:
+      - "${GRAFANA_PORT:-3030}:3000"
     expose:
       - "3000"
     depends_on:
